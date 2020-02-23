@@ -3,12 +3,12 @@
 // Purpose:     Red-Black Tree - public interface tests
 //
 // $NoKeywords: $ivs_project_1 $black_box_tests.cpp
-// $Author:     JMENO PRIJMENI <xlogin00@stud.fit.vutbr.cz>
+// $Author:     JAKUB DVORAK <xdvora3k@stud.fit.vutbr.cz>
 // $Date:       $2017-01-04
 //============================================================================//
 /**
  * @file black_box_tests.cpp
- * @author JMENO PRIJMENI
+ * @author JAKUB DVORAK
  * 
  * @brief Implementace testu binarniho stromu.
  */
@@ -18,6 +18,19 @@
 #include "gtest/gtest.h"
 
 #include "red_black_tree.h"
+
+class Derived : public BinaryTree, public testing::Test
+{
+
+};
+
+
+TEST_F(Derived, Test)
+{
+    BinaryTree t;
+    std::pair<bool, BinaryTree::Node_t*> x = t.InsertNode(5);
+    EXPECT_EQ(NULL, t.GetRoot());
+}
 
 //============================================================================//
 // ** ZDE DOPLNTE TESTY **
@@ -34,3 +47,4 @@
 //============================================================================//
 
 /*** Konec souboru black_box_tests.cpp ***/
+
