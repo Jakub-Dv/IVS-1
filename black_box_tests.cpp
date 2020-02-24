@@ -19,34 +19,38 @@
 
 #include "red_black_tree.h"
 
-class Derived : public BinaryTree, public testing::Test
+class EmptyTree : public BinaryTree, public testing::Test
 {
+public:
+    BinaryTree t;
+};
+
+class NonEmptyTree : public BinaryTree, public testing::Test
+{
+public:
+    BinaryTree k;
 
 };
 
-
-TEST_F(Derived, EmptyTree)
+TEST_F(EmptyTree, InsertNode)
 {
-    BinaryTree t;
-    ASSERT_EQ(t.GetRoot(), nullptr);
-    EXPECT_EQ(t.FindNode(5), nullptr);
+    std::pair<bool, BinaryTree::Node_t*> x = t.InsertNode(5);
+    EXPECT_TRUE(x.first);
+    EXPECT_NE(x.second, nullptr);
+}
+
+TEST_F(EmptyTree, DeleteNode)
+{
     EXPECT_FALSE(t.DeleteNode(5));
-    std::pair<bool, BinaryTree::Node_t*> x1 = t.InsertNode(5);
-    ASSERT_NE(t.GetRoot(), nullptr);
-    EXPECT_TRUE(x1.first);
-    std::pair<bool, BinaryTree::Node_t*> x2 = t.InsertNode(5);
-    EXPECT_FALSE(x2.first);
-    EXPECT_NE(t.FindNode(5), nullptr);
+    t.InsertNode(5);
     EXPECT_TRUE(t.DeleteNode(5));
 }
 
-TEST_F(Derived, NonEmptyTree)
+TEST_F(EmptyTree, FindNode)
 {
-    BinaryTree k;
-    std::pair<bool, BinaryTree::Node_t*> x3 = k.InsertNode(5);
-    ASSERT_NE(k.GetRoot(), nullptr);
-    std::pair<bool, BinaryTree::Node_t*> x4 = k.InsertNode(6);
-
+    EXPECT_EQ(t.FindNode(5), nullptr);
+    std::pair<bool, BinaryTree::Node_t*> x = t.InsertNode(5);
+    EXPECT_NE(t.FindNode(5), nullptr);
 }
 
 //============================================================================//
