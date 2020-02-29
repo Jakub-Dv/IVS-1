@@ -37,7 +37,7 @@ class TreeAxioms : public BinaryTree, public testing::Test
 {
 protected:
     BinaryTree l;
-    std::vector<int> v = {9, 5, 47, -15, -4, 3, 7, -9, 38, 45};
+    std::vector<int> v = {9, 5, 47, -15, -4, 3, 7, -9, 38, 45, 14, 15, 16, 17};
     std::vector<std::pair<bool, Node_t*>> outNewNodes;
     std::vector<Node_t*> outLeafNodes;
     std::vector<Node_t*> outAllNodes;
@@ -46,18 +46,34 @@ protected:
 
 TEST_F(EmptyTree, InsertNode)
 {
-    std::pair<bool, BinaryTree::Node_t*> x;
+    std::pair<bool, BinaryTree::Node_t*> x, y, z;
     EXPECT_FALSE(x.first);
     x = t.InsertNode(5);
     EXPECT_TRUE(x.first);
     EXPECT_NE(x.second, nullptr);
+
+    EXPECT_FALSE(y.first);
+    y = t.InsertNode(-5);
+    EXPECT_TRUE(y.first);
+    EXPECT_NE(y.second, nullptr);
+    EXPECT_EQ(y.second->pParent, x.second);
+    
+    EXPECT_FALSE(z.first);
+    z = t.InsertNode(0);
+    EXPECT_TRUE(z.first);
+    EXPECT_NE(z.second, nullptr);
+    EXPECT_EQ(x.second->pParent, z.second);
+    EXPECT_EQ(x.second->pParent->pLeft, y.second);
 }
 
 TEST_F(EmptyTree, DeleteNode)
 {
+    std::pair<bool, BinaryTree::Node_t*> x;
     EXPECT_FALSE(t.DeleteNode(5));
     EXPECT_FALSE(t.DeleteNode(-5));
-    t.InsertNode(5);
+    x = t.InsertNode(5);
+    EXPECT_TRUE(x.first);
+    EXPECT_NE(x.second, nullptr);
     EXPECT_TRUE(t.DeleteNode(5));
 }
 
@@ -80,6 +96,7 @@ TEST_F(NonEmptyTree, InsertMode)
     std::pair<bool, BinaryTree::Node_t*> z2 = k.InsertNode(-5);
     EXPECT_TRUE(z2.first);
     EXPECT_NE(z2.second, nullptr);
+    EXPECT_EQ(z1.second->pParent->pParent, z2.second->pParent->pParent);
 }
 
 TEST_F(NonEmptyTree, FindNode)
@@ -120,34 +137,28 @@ TEST_F(TreeAxioms, Axiom2)
     }
 }
 
-BinaryTree::Node_t *Function(Node_t &parent)
-{
-    return parent.pParent;
-}
-
 TEST_F(TreeAxioms, Axiom3)
 {
     l.InsertNodes(v, outNewNodes);
     l.GetLeafNodes(outLeafNodes);
-    for (int i = 0; i < outLeafNodes.size(); i += 2)
+    for (int i = 0; i < outLeafNodes.size(); i++)
     {
-        Node_t *parent = outLeafNodes[i]->pParent;
-        while (Function(*parent)->key != 5)
+
+        int count2 = 0, count1 = -1;
+        Node_t* parent = outLeafNodes[i];
+        while (parent)
         {
-            int length1 = 0, length2 = 0;
-            if (outLeafNodes[i]->pParent->color)
+            if (parent->color == BLACK)
             {
-                length1++;
+                count2++;
             }
-            if (outLeafNodes[i+1]->pParent->color)
-            {
-                length2++;
-            }
-            if (i)
-            {
-                EXPECT_EQ(length1, length2);
-            }
+            parent = parent->pParent;
         }
+        if (count1 >= 0)
+        {
+            EXPECT_EQ(count1, count2);
+        }
+        count1 = count2;
     }
 }
 //============================================================================//
