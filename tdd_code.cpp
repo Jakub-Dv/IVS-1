@@ -39,26 +39,61 @@ PriorityQueue::PriorityQueue()
 
 PriorityQueue::~PriorityQueue()
 {
-
+    Element_t* position = GetHead();
+    while (position != nullptr)
+    {
+        position = position->pNext;
+        delete position->pPrev;
+    }
 }
 
 void PriorityQueue::Insert(int value)
 {
+    Element_t* el = new Element_t;
+    el->value = value;
+    Element_t* position = GetHead();
+    while (value < position->value)
+    {
+        position = position->pNext;
+    }
+    el->pNext = position->pNext;
+    el->pPrev = position;
 
+    position->pNext->pPrev = el;
+    position->pNext = el;
 }
 
 bool PriorityQueue::Remove(int value)
 {
-    return false;
+    Element_t* position = Find(value);
+    if (position == NULL)
+    {
+        return false;
+    }
+    position->pNext->pPrev = position->pPrev;
+    position->pPrev->pNext = position->pNext;
+    delete position;
+    return true;
 }
 
 PriorityQueue::Element_t *PriorityQueue::Find(int value)
 {
-    return NULL;
+    Element_t* position = GetHead();
+    while (value != position->value)
+    {
+        position = position->pNext;
+        if (position == NULL)
+        {
+            return NULL;
+        }
+    }
+    return position;
 }
 
 PriorityQueue::Element_t *PriorityQueue::GetHead()
 {
+
+
     return NULL;
 }
 
